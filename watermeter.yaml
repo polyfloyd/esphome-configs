@@ -1,0 +1,51 @@
+esphome:
+  name: watermeter
+
+esp32:
+  board: esp32thing
+  framework:
+    type: arduino
+
+logger:
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  reboot_timeout: 3min
+
+ota:
+  safe_mode: true
+  password: !secret ota_password
+
+mqtt:
+  broker: mqtt.local
+
+
+text_sensor:
+  - platform: version
+    name: "ESPHome Version"
+    hide_timestamp: true
+    state_topic: esphome/watermeter/version
+
+sensor:
+  - platform: wifi_signal
+    name: "WiFi Signal dB"
+    update_interval: 10s
+    state_topic: esphome/watermeter/wifi_signal
+    retain: false
+
+  - platform: pulse_counter
+    pin: 16
+    name: "Water Consumption"
+    unit_of_measurement: 'L/min'
+    state_topic: watermeter/water_consumption
+    retain: false
+    device_class: water
+    icon: mdi:water
+    total:
+      unit_of_measurement: 'L'
+      name: "Water Consumed Total"
+      state_topic: watermeter/water_consumed_total
+      device_class: water
+      state_class: total_increasing
+      icon: mdi:water
