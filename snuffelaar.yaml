@@ -63,6 +63,9 @@ sensor:
     automatic_baseline_calibration: true
 
   - platform: bme280_i2c
+    temperature:
+      name: "BME280 Temperature"
+      state_topic: null
     pressure:
       name: "BME280 Pressure"
       state_topic: sensors/${name}/pressure
@@ -76,7 +79,7 @@ sensor:
 
   - platform: dallas
     name: "DS18B20 Temperature"
-    index: 0
+    address: ${dallas_addr}
     state_topic: sensors/${name}/temperature
     retain: false
 

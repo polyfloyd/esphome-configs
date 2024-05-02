@@ -1,4 +1,5 @@
 substitutions:
   name: woonkamer
+  dallas_addr: "0x0639e062dc16ff28"
 
 <<: !include snuffelaar.yaml
