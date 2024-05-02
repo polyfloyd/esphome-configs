@@ -1,0 +1,4 @@
+substitutions:
+  name: badkamer
+
+<<: !include snuffelaar.yaml

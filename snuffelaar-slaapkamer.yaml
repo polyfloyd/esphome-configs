@@ -1,0 +1,4 @@
+substitutions:
+  name: slaapkamer
+
+<<: !include snuffelaar.yaml

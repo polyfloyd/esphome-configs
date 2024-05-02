@@ -1,0 +1,119 @@
+esphome:
+  name: snuffelaar-${name}
+
+esp32:
+  board: esp32thing
+  framework:
+    type: arduino
+
+logger:
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  reboot_timeout: 3min
+
+ota:
+  safe_mode: true
+  password: !secret ota_password
+
+mqtt:
+  broker: mqtt.local
+
+
+i2c:
+  sda: 23
+  scl: 13
+  scan: true
+
+uart:
+  - id: uart_mhz19
+    rx_pin: 22
+    tx_pin: 21
+    baud_rate: 9600
+  - id: uart_pms7003
+    rx_pin: 25
+    tx_pin: 32
+    baud_rate: 9600
+
+dallas:
+  - pin: 4
+
+
+text_sensor:
+  - platform: version
+    name: "ESPHome Version"
+    hide_timestamp: true
+    state_topic: esphome/${name}/version
+
+sensor:
+  - platform: wifi_signal
+    name: "WiFi Signal dB"
+    update_interval: 10s
+    state_topic: esphome/${name}/wifi_signal
+    retain: false
+
+  - platform: mhz19
+    uart_id: uart_mhz19
+    co2:
+      name: "MH-Z19 CO2 Value"
+      state_topic: sensors/${name}/co2
+      retain: false
+    update_interval: 10s
+    automatic_baseline_calibration: true
+
+  - platform: bme280_i2c
+    pressure:
+      name: "BME280 Pressure"
+      state_topic: sensors/${name}/pressure
+      retain: false
+    humidity:
+      name: "BME280 Humidity"
+      state_topic: sensors/${name}/humidity
+      retain: false
+    address: 0x76
+    update_interval: 10s
+
+  - platform: dallas
+    name: "DS18B20 Temperature"
+    index: 0
+    state_topic: sensors/${name}/temperature
+    retain: false
+
+  - platform: pmsx003
+    uart_id: uart_pms7003
+    type: PMSX003
+    pm_1_0:
+      name: "Particulate Matter <1.0μg/m³"
+      state_topic: sensors/${name}/dust_mass/pm1.0
+      retain: false
+    pm_2_5:
+      name: "Particulate Matter <2.5μg/m³"
+      state_topic: sensors/${name}/dust_mass/pm2.5
+      retain: false
+    pm_10_0:
+      name: "Particulate Matter <10.0μg/m³"
+      state_topic: sensors/${name}/dust_mass/pm10.0
+      retain: false
+    update_interval: 30s
+
+  - platform: sgp30
+    tvoc:
+      name: "SGP30 TVOC"
+      accuracy_decimals: 0
+      state_topic: sensors/${name}/organic_compounds
+      retain: false
+    eco2:
+      name: "SGP30 eCO2"
+      accuracy_decimals: 0
+      state_topic: null
+    store_baseline: yes
+    address: 0x58
+    update_interval: 30s
+
+  - platform: bh1750
+    name: "BH1750 Illuminance"
+    address: 0x23
+    update_interval: 10s
+    state_topic: sensors/${name}/light_intensity
+    retain: false
