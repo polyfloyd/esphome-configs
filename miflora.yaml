@@ -1,0 +1,103 @@
+esphome:
+  name: miflora
+  on_boot:
+    priority: 250
+    then:
+      - delay: 20s
+      - repeat:
+          count: 2147483648
+          then:
+          - lambda: |-
+              id(ble_tracker).start_scan();
+              id(ble_tracker).set_scan_continuous(true);
+          - delay: 1min
+          - lambda: id(ble_tracker).set_scan_continuous(false);
+          - delay: 29min
+
+esp32:
+  board: esp32thing
+  framework:
+    type: arduino
+
+logger:
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  reboot_timeout: 3min
+
+ota:
+  safe_mode: true
+  password: !secret ota_password
+
+mqtt:
+  broker: mqtt.local
+  # Disable logging to MQTT to reduce airtime of the WiFi radio, which conflicts with BLE.
+  log_topic: null
+
+spi:
+  clk_pin: 18
+  mosi_pin: 5
+
+esp32_ble_tracker:
+  id: ble_tracker
+  scan_parameters:
+    interval: 20s
+    window: 1s
+    duration: 2min
+    active: false
+    continuous: false
+
+text_sensor:
+  - platform: version
+    name: "ESPHome Version"
+    hide_timestamp: true
+    state_topic: esphome/miflora/version
+
+sensor:
+  - platform: wifi_signal
+    name: "WiFi Signal dB"
+    update_interval: 10s
+    state_topic: esphome/miflora/wifi_signal
+    retain: false
+
+  - platform: xiaomi_hhccjcy01
+    mac_address: 'C4:7C:8D:6D:92:2D'
+    temperature:
+      name: "01 Temperature"
+      state_topic: miflora/01/temperature
+      retain: false
+    moisture:
+      name: "01 Moisture"
+      id: moisture_01
+      state_topic: miflora/01/moisture
+      retain: false
+    illuminance:
+      name: "01 Illuminance"
+      state_topic: miflora/01/illuminance
+      retain: false
+    conductivity:
+      name: "01 Soil Conductivity"
+      state_topic: miflora/01/conductivity
+      retain: false
+
+font:
+  - file: "gfonts://Cookie"
+    id: font_small
+    size: 24
+  - file: "gfonts://Permanent Marker"
+    id: font_big
+    size: 34
+
+display:
+  - platform: waveshare_epaper
+    model: 2.90in-dke
+    cs_pin: 19
+    dc_pin: 21
+    busy_pin: 22
+    reset_pin: 23
+    update_interval: 15min
+    rotation: 180
+    lambda: |-
+      it.printf(0, 0, id(font_small), "Euphorbia");
+      it.printf(0, 8, id(font_big), "%.0f %%", id(moisture_01).state);
