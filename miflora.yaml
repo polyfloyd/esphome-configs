@@ -81,6 +81,38 @@ sensor:
       state_topic: miflora/01/conductivity
       retain: false
 
+  - platform: xiaomi_hhccjcy01
+    mac_address: '5C:85:7E:12:D4:11'
+    temperature:
+      name: "Miflora 02 Temperature"
+      state_topic: miflora/02/temperature
+    moisture:
+      name: "Miflora 02 Moisture"
+      id: moisture_02
+      state_topic: miflora/02/moisture
+    illuminance:
+      name: "Miflora 02 Illuminance"
+      state_topic: miflora/02/illuminance
+    conductivity:
+      name: "Miflora 02 Soil Conductivity"
+      state_topic: miflora/02/conductivity
+
+  - platform: xiaomi_hhccjcy01
+    mac_address: '5C:85:7E:12:D4:33'
+    temperature:
+      name: "Miflora 03 Temperature"
+      state_topic: miflora/03/temperature
+    moisture:
+      name: "Miflora 03 Moisture"
+      id: moisture_03
+      state_topic: miflora/03/moisture
+    illuminance:
+      name: "Miflora 03 Illuminance"
+      state_topic: miflora/03/illuminance
+    conductivity:
+      name: "Miflora 03 Soil Conductivity"
+      state_topic: miflora/03/conductivity
+
 font:
   - file: "gfonts://Cookie"
     id: font_small
@@ -101,3 +133,9 @@ display:
     lambda: |-
       it.printf(0, 0, id(font_small), "Euphorbia");
       it.printf(0, 8, id(font_big), "%.0f %%", id(moisture_01).state);
+
+      it.printf(0, 50, id(font_small), "Dieffenbachia");
+      it.printf(0, 58, id(font_big), "%.0f %%", id(moisture_02).state);
+
+      it.printf(0, 100, id(font_small), "Pilea");
+      it.printf(0, 108, id(font_big), "%.0f %%", id(moisture_03).state);
