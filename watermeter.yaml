@@ -34,13 +34,13 @@ sensor:
     state_topic: esphome/watermeter/wifi_signal
     retain: false
 
-  - platform: pulse_counter
+  - platform: pulse_meter
     pin: 16
     name: "Water Consumption"
     unit_of_measurement: 'L/min'
     state_topic: watermeter/water_consumption
-    retain: false
     device_class: water
+    state_class: measurement
     icon: mdi:water
     total:
       unit_of_measurement: 'L'
