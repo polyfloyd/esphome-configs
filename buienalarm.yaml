@@ -127,8 +127,10 @@ display:
       it.filled_rectangle(mmh_x, 0, 40, 16);
       it.printf(mmh_x+2, 0, id(font_small), COLOR_OFF, "mm/h");
 
+      const int num_bars = 8;
+
       double mmh_max = 0;
-      for (int i = 0; i < 25; i++) {
+      for (int i = 0; i < num_bars*2; i++) {
         mmh_max = max(mmh_max, id(rain)[i]);
       }
 
@@ -148,14 +150,13 @@ display:
       // the line between the timestamps below and rain bars above
       it.horizontal_line(0, line_y, it.get_width());
 
-      const int num_bars = 8;
       const int bar_w = it.get_width() / num_bars;
       const int bar_max_h = 80;
       const int time_interval = 5; // minutes
       const double mmh_clip = 2.5;
 
       for (int i = 0; i < num_bars; i++) {
-        double mmh = id(rain)[i*2];
+        double mmh = max(id(rain)[i*2], id(rain)[i*2+1]);
         int time = id(rain_start) + time_interval * i*2;
 
         int bar_x = bar_w * i;
