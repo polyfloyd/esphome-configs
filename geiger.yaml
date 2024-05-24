@@ -68,12 +68,13 @@ sensor:
         pullup: false
     name: "Ionizing Radiation"
     state_topic: geiger
+    retain: false
     count_mode:
      rising_edge: DISABLE
      falling_edge: INCREMENT
     unit_of_measurement: 'μSv/h'
     filters:
-      - multiply: 0.006622516556291391
+      - multiply: 0.00812037037037
     on_value:
       then:
         - component.update: epaper
