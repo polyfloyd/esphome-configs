@@ -120,3 +120,13 @@ sensor:
     update_interval: 10s
     state_topic: sensors/${name}/light_intensity
     retain: false
+
+light:
+  - platform: esp32_rmt_led_strip
+    rgb_order: GRB
+    is_rgbw: true
+    pin: 26
+    num_leds: 1
+    rmt_channel: 0
+    chipset: SK6812
+    name: "Led"
