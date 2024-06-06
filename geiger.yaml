@@ -74,7 +74,7 @@ sensor:
      falling_edge: INCREMENT
     unit_of_measurement: 'μSv/h'
     filters:
-      - multiply: 0.00812037037037
+      - multiply: 0.0812037037037
     on_value:
       then:
         - component.update: epaper
@@ -127,7 +127,7 @@ display:
 
       const float banana_dose = 0.1; // https://en.wikipedia.org/wiki/Banana_equivalent_dose
 
-      float bananas = max(1.0f, id(geiger).state / banana_dose);
+      float bananas = id(geiger).state / banana_dose;
       for (int i = 0; i < floor(bananas); i++) {
         int x = i * id(banana).get_width();
         it.image(x, it.get_height() - id(banana).get_height(), id(banana));
