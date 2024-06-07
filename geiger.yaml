@@ -105,10 +105,7 @@ image:
     # https://www.svgrepo.com/svg/450644/banana
   - file: resources/banana.svg
     id: banana
-    resize: 48x48
-  - file: resources/banana_half.svg
-    id: banana_half
-    resize: 48x48
+    resize: 37x37 # 296/8
 
 display:
   - platform: waveshare_epaper
@@ -129,13 +126,12 @@ display:
       it.printf(it.get_width()/2 - label_w/2, 10, id(font_big), "%s", label);
 
       const float banana_dose = 0.1; // https://en.wikipedia.org/wiki/Banana_equivalent_dose
+      const int banana_h = id(banana).get_height();
+      const int banana_w = id(banana).get_width();
 
       float bananas = id(geiger).state / banana_dose;
-      for (int i = 0; i < floor(bananas); i++) {
-        int x = i * id(banana).get_width();
-        it.image(x, it.get_height() - id(banana).get_height(), id(banana));
-      }
-      if (fmod(bananas, 1.0f) > 0.5f) {
-        int x = floor(bananas) * id(banana).get_width();
-        it.image(x, it.get_height() - id(banana).get_height(), id(banana_half));
+      for (int i = 0; i < min((int)round(bananas), 16); i++) {
+        int x = (i % 8) * banana_w;
+        int y = it.get_height() - banana_h - (i / 8) * banana_h;
+        it.image(x, y, id(banana));
       }
