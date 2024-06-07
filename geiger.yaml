@@ -74,7 +74,10 @@ sensor:
      falling_edge: INCREMENT
     unit_of_measurement: 'μSv/h'
     filters:
-      - multiply: 0.0812037037037
+        # Factor from documentation
+      - multiply: 0.00812037037037
+        # My geiger is a bit meh, so it detects about half as much as it should
+      - multiply: 2
     on_value:
       then:
         - component.update: epaper
