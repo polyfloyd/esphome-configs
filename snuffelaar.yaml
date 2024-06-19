@@ -14,7 +14,7 @@ wifi:
   reboot_timeout: 3min
 
 ota:
-  safe_mode: true
+  platform: esphome
   password: !secret ota_password
 
 mqtt:
@@ -36,8 +36,9 @@ uart:
     tx_pin: 32
     baud_rate: 9600
 
-dallas:
-  - pin: 4
+one_wire:
+  - platform: gpio
+    pin: 4
 
 
 text_sensor:
@@ -77,7 +78,7 @@ sensor:
     address: 0x76
     update_interval: 10s
 
-  - platform: dallas
+  - platform: dallas_temp
     name: "DS18B20 Temperature"
     address: ${dallas_addr}
     state_topic: sensors/${name}/temperature

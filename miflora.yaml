@@ -27,7 +27,7 @@ wifi:
   reboot_timeout: 3min
 
 ota:
-  safe_mode: true
+  platform: esphome
   password: !secret ota_password
 
 mqtt:
