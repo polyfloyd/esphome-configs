@@ -1,5 +1,7 @@
 substitutions:
   name: slaapkamer
   dallas_addr: "0x1ecce062db21ff28"
+  co2_alarm_off: "1799"
+  co2_alarm_on: "1800"
 
 <<: !include snuffelaar.yaml
