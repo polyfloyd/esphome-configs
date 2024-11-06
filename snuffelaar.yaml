@@ -57,7 +57,7 @@ sensor:
   - platform: mhz19
     uart_id: uart_mhz19
     co2:
-      name: "MH-Z19 CO2 Value"
+      name: "CO2"
       state_topic: sensors/${name}/co2
       retain: false
       on_value_range:
@@ -77,18 +77,18 @@ sensor:
       name: "BME280 Temperature"
       state_topic: null
     pressure:
-      name: "BME280 Pressure"
+      name: "Barometer"
       state_topic: sensors/${name}/pressure
       retain: false
     humidity:
-      name: "BME280 Humidity"
+      name: "Humidity"
       state_topic: sensors/${name}/humidity
       retain: false
     address: 0x76
     update_interval: 10s
 
   - platform: dallas_temp
-    name: "DS18B20 Temperature"
+    name: "Temperature"
     address: ${dallas_addr}
     state_topic: sensors/${name}/temperature
     retain: false
@@ -97,22 +97,22 @@ sensor:
     uart_id: uart_pms7003
     type: PMSX003
     pm_1_0:
-      name: "Particulate Matter <1.0μg/m³"
+      name: "Particulates <1.0μg/m³"
       state_topic: sensors/${name}/dust_mass/pm1.0
       retain: false
     pm_2_5:
-      name: "Particulate Matter <2.5μg/m³"
+      name: "Particulates <2.5μg/m³"
       state_topic: sensors/${name}/dust_mass/pm2.5
       retain: false
     pm_10_0:
-      name: "Particulate Matter <10.0μg/m³"
+      name: "Particulates <10.0μg/m³"
       state_topic: sensors/${name}/dust_mass/pm10.0
       retain: false
     update_interval: 30s
 
   - platform: sgp30
     tvoc:
-      name: "SGP30 TVOC"
+      name: "TVOC"
       accuracy_decimals: 0
       state_topic: sensors/${name}/organic_compounds
       retain: false
@@ -125,7 +125,7 @@ sensor:
     update_interval: 30s
 
   - platform: bh1750
-    name: "BH1750 Illuminance"
+    name: "Ambient Light"
     address: 0x23
     update_interval: 10s
     state_topic: sensors/${name}/light_intensity
