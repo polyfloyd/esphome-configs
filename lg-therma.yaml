@@ -61,7 +61,6 @@ switch:
     register_type: coil
     address: 0
 
-    # Not showing up in HA?
   - platform: modbus_controller
     name: "Silent Mode"
     icon: mdi:volume-off
@@ -97,6 +96,13 @@ binary_sensor:
     icon: mdi:snowflake-melt
     register_type: discrete_input
     address: 4
+
+  - platform: modbus_controller
+    modbus_controller_id: lg
+    name: "Silent Mode On"
+    icon: mdi:volume-off
+    register_type: discrete_input
+    address: 7
 
   - platform: modbus_controller
     modbus_controller_id: lg
@@ -196,7 +202,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "Indoor Temperature"
+    name: "Room Air Temperature"
     register_type: read
     address: 7
     register_count: 2
@@ -216,7 +222,6 @@ sensor:
     address: 8
     register_count: 2
     value_type: U_WORD
-    device_class: "water"
     unit_of_measurement: "L/m"
     state_class: "measurement"
     accuracy_decimals: 1
@@ -329,19 +334,7 @@ sensor:
     filters:
       - multiply: 0.1
 
-  - platform: modbus_controller
-    modbus_controller_id: lg
-    name: "INPUT 21"
-    register_type: read
-    address: 21
-    register_count: 2
-    value_type: S_WORD
-    device_class: "temperature"
-    unit_of_measurement: "°C"
-    state_class: "measurement"
-    accuracy_decimals: 1
-    filters:
-      - multiply: 0.1
+    # 21 is a mystery temperature sensor.
 
   - platform: modbus_controller
     modbus_controller_id: lg
@@ -397,7 +390,7 @@ select:
     optionsmap:
       "Water Outlet": 0
       "Water Inlet": 1
-      "Indoor Air": 2
+      "Room Air": 2
 
 number:
   - platform: modbus_controller
@@ -406,6 +399,17 @@ number:
     address: 2
     min_value: 16
     max_value: 30
+    step: 1
+    multiply: 10
+    device_class: "temperature"
+    unit_of_measurement: "°C"
+
+  - platform: modbus_controller
+    name: "Set Room Air Temperature"
+    icon: mdi:home-thermometer
+    address: 3
+    min_value: 10
+    max_value: 40
     step: 1
     multiply: 10
     device_class: "temperature"
