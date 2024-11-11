@@ -55,6 +55,7 @@ modbus_controller:
 
 switch:
   - platform: modbus_controller
+    id: active
     name: "Active"
     icon: mdi:power
     modbus_controller_id: lg
@@ -148,6 +149,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: lg
+    id: inlet_temp
     name: "Water Inlet"
     icon: mdi:thermometer-chevron-down
     register_type: read
@@ -163,6 +165,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: lg
+    id: outlet_temp
     name: "Water Outlet"
     icon: mdi:thermometer-chevron-up
     register_type: read
@@ -216,6 +219,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: lg
+    id: flow_rate
     name: "Flow Rate"
     icon: mdi:waves-arrow-right
     register_type: read
@@ -366,6 +370,34 @@ sensor:
     address: 24
     value_type: U_WORD
     unit_of_measurement: "Hz"
+    state_class: "measurement"
+    accuracy_decimals: 0
+
+  - platform: template
+    id: water_delta_t
+    name: "Water ΔT"
+    icon: mdi:delta
+    lambda: |-
+      return id(outlet_temp).state - id(inlet_temp).state;
+    unit_of_measurement: "°C"
+    state_class: "measurement"
+
+  - platform: template
+    name: "Power Output"
+    icon: mdi:heat-wave
+    lambda: |-
+      // Set the value to 0 when off. This accounts for drifting water temperatures which can result
+      // in weird readings. The flow sensor also seems to default to a non-zero value when off which
+      // does not help either.
+      if (!id(active).state) {
+        return 0.0;
+      }
+      // Water has a specific heat of 4184 joule per kilogram/degree.
+      const double specific_heat = 4184.0;
+      double flow_lps = id(flow_rate).state / 60.0;
+      // Δt * c * L/sec = Joule/sec = Watt
+      return id(water_delta_t).state * specific_heat * flow_lps;
+    unit_of_measurement: "Watt"
     state_class: "measurement"
     accuracy_decimals: 0
 
