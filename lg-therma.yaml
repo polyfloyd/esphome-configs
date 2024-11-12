@@ -55,7 +55,6 @@ modbus_controller:
 
 switch:
   - platform: modbus_controller
-    id: active
     name: "Active"
     icon: mdi:power
     modbus_controller_id: lg
@@ -79,6 +78,7 @@ binary_sensor:
 
   - platform: modbus_controller
     modbus_controller_id: lg
+    id: pump_running
     name: "Pump Running"
     icon: mdi:pump
     register_type: discrete_input
@@ -231,6 +231,9 @@ sensor:
     accuracy_decimals: 1
     filters:
       - multiply: 0.1
+        # The flow rate has bogus readings when the pump is not running.
+      - lambda: |-
+          return id(pump_running).state ? x : 0.0;
 
   - platform: modbus_controller
     modbus_controller_id: lg
@@ -386,12 +389,6 @@ sensor:
     name: "Power Output"
     icon: mdi:heat-wave
     lambda: |-
-      // Set the value to 0 when off. This accounts for drifting water temperatures which can result
-      // in weird readings. The flow sensor also seems to default to a non-zero value when off which
-      // does not help either.
-      if (!id(active).state) {
-        return 0.0;
-      }
       // Water has a specific heat of 4184 joule per kilogram/degree.
       const double specific_heat = 4184.0;
       double flow_lps = id(flow_rate).state / 60.0;
