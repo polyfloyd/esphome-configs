@@ -179,29 +179,9 @@ sensor:
     filters:
       - multiply: 0.1
 
-  - platform: modbus_controller
-    modbus_controller_id: lg
-    name: "INPUT 4"
-    register_type: read
-    address: 4
-    register_count: 2
-    value_type: S_WORD
-
-  - platform: modbus_controller
-    modbus_controller_id: lg
-    name: "INPUT 5"
-    register_type: read
-    address: 5
-    register_count: 2
-    value_type: S_WORD
-
-  - platform: modbus_controller
-    modbus_controller_id: lg
-    name: "INPUT 6"
-    register_type: read
-    address: 6
-    register_count: 2
-    value_type: U_WORD
+  # reg read 4 outputs a constant -649
+  # reg read 5 outputs a constant -649
+  # reg read 6 outputs a constant 3000
 
   - platform: modbus_controller
     modbus_controller_id: lg
@@ -235,33 +215,13 @@ sensor:
       - lambda: |-
           return id(pump_running).state ? x : 0.0;
 
-  - platform: modbus_controller
-    modbus_controller_id: lg
-    name: "INPUT 9"
-    register_type: read
-    address: 9
-    register_count: 2
-    value_type: S_WORD
+  # reg read 9 outputs a constant -649
+  # reg read 10 outputs a constant -646
+  # reg read 11 outputs a constant 0
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "INPUT 10"
-    register_type: read
-    address: 10
-    register_count: 2
-    value_type: S_WORD
-
-  - platform: modbus_controller
-    modbus_controller_id: lg
-    name: "INPUT 11"
-    register_type: read
-    address: 11
-    register_count: 2
-    value_type: U_WORD
-
-  - platform: modbus_controller
-    modbus_controller_id: lg
-    name: "Outside Temperature"
+    name: "Air Ingress Temperature"
     register_type: read
     address: 12
     register_count: 2
@@ -274,28 +234,8 @@ sensor:
       - multiply: 0.1
 
   # addresses 13,14,15 are not used
-
-  - platform: modbus_controller
-    modbus_controller_id: lg
-    name: "INPUT 16"
-    register_type: read
-    address: 16
-    register_count: 2
-    value_type: S_WORD
-    device_class: "temperature"
-    unit_of_measurement: "°C"
-    state_class: "measurement"
-    accuracy_decimals: 1
-    filters:
-      - multiply: 0.1
-
-  - platform: modbus_controller
-    modbus_controller_id: lg
-    name: "INPUT 17"
-    register_type: read
-    address: 17
-    register_count: 2
-    value_type: U_WORD
+  # 16 is a mystery temperature sensor that seems to be somewhere outside.
+  # reg read 17 outputs a constant 12000
 
   - platform: modbus_controller
     modbus_controller_id: lg
@@ -329,7 +269,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "INPUT 20"
+    name: "Air Egress Temperature"
     register_type: read
     address: 20
     register_count: 2
