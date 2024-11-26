@@ -60,6 +60,7 @@ sensor:
         pulldown: false
         pullup: false
     name: "Ionizing Radiation"
+    icon: mdi:radioactive
     state_topic: geiger
     retain: false
     count_mode:
