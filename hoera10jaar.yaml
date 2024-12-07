@@ -1,0 +1,81 @@
+esphome:
+  name: hoera10jaar
+
+esp32:
+  board: lolin32
+  framework:
+    type: arduino
+
+external_components:
+  - source:
+      type: local
+      path: components
+
+logger:
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+ota:
+  platform: esphome
+  password: !secret ota_password
+  on_begin:
+    - lambda: !lambda |-
+        id(led_matrix).set_off();
+
+mqtt:
+  broker: hoera10jaar.revspace.nl
+  discovery: false
+  on_message:
+    - topic: hoera10jaar/amersfoort
+      then:
+        - lambda: !lambda |-
+            id(led_matrix).set_led_from_mqtt("amersfoort", x);
+    - topic: hoera10jaar/amsterdam
+      then:
+        - lambda: !lambda |-
+            id(led_matrix).set_led_from_mqtt("amsterdam", x);
+    - topic: hoera10jaar/arnhem
+      then:
+        - lambda: !lambda |-
+            id(led_matrix).set_led_from_mqtt("arnhem", x);
+    - topic: hoera10jaar/denhaag
+      then:
+        - lambda: !lambda |-
+            id(led_matrix).set_led_from_mqtt("denhaag", x);
+    - topic: hoera10jaar/eindhoven
+      then:
+        - lambda: !lambda |-
+            id(led_matrix).set_led_from_mqtt("eindhoven", x);
+    - topic: hoera10jaar/enschede
+      then:
+        - lambda: !lambda |-
+            id(led_matrix).set_led_from_mqtt("enschede", x);
+    - topic: hoera10jaar/heerlen
+      then:
+        - lambda: !lambda |-
+            id(led_matrix).set_led_from_mqtt("heerlen", x);
+    - topic: hoera10jaar/leeuwarden
+      then:
+        - lambda: !lambda |-
+            id(led_matrix).set_led_from_mqtt("leeuwarden", x);
+    - topic: hoera10jaar/rotterdam
+      then:
+        - lambda: !lambda |-
+            id(led_matrix).set_led_from_mqtt("rotterdam", x);
+    - topic: hoera10jaar/venlo
+      then:
+        - lambda: !lambda |-
+            id(led_matrix).set_led_from_mqtt("venlo", x);
+    - topic: hoera10jaar/wageningen
+      then:
+        - lambda: !lambda |-
+            id(led_matrix).set_led_from_mqtt("wageningen", x);
+    - topic: hoera10jaar/zwolle
+      then:
+        - lambda: !lambda |-
+            id(led_matrix).set_led_from_mqtt("zwolle", x);
+
+hoera10jaar:
+  id: led_matrix

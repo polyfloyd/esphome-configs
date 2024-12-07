@@ -6,3 +6,5 @@
 
 /.direnv
 /.envrc
+
+__pycache__
