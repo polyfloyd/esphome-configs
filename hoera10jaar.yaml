@@ -16,13 +16,14 @@ logger:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
+  on_connect:
+    - light.turn_on: led_matrix_light
 
 ota:
   platform: esphome
   password: !secret ota_password
   on_begin:
-    - lambda: !lambda |-
-        id(led_matrix).set_off();
+    - light.turn_off: led_matrix_light
 
 mqtt:
   broker: hoera10jaar.revspace.nl
@@ -79,3 +80,10 @@ mqtt:
 
 hoera10jaar:
   id: led_matrix
+
+light:
+  - platform: hoera10jaar
+    id: led_matrix_light
+    hoera10jaar_id: led_matrix
+    name: "LED-Matrix"
+    icon: mdi:led-off

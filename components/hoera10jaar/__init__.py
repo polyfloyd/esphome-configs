@@ -4,7 +4,6 @@ from esphome.const import (
     CONF_ID
 )
 
-
 hoera10jaar_ns = cg.esphome_ns.namespace("hoera10jaar")
 Hoera10JaarComponent = hoera10jaar_ns.class_("Hoera10JaarComponent", cg.Component)
 

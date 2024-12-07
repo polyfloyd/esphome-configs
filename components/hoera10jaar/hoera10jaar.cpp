@@ -24,16 +24,21 @@ int          fade_interval = 5;
 int          waitstep = 10;
 int          wait = -14 * waitstep;
 
+const static int levels_full[] = {
+    192,40,224,8,24,152,128,104,184,16,88,216,208,240,
+    176,232,200,32,160,72,248,80,56,112,136,1,48,144,168,64,96,120
+};  // ((0..31) »*» 8).pick(*).join(",")
 
 bool fade();
 void wait_fade();
 void all(int ms, bool red, bool green);
-void led_matrix_loop(void *param);
 
 
 void Hoera10JaarComponent::setup() {
+    this->levels = levels_full;
+
     xTaskCreate(
-        led_matrix_loop, /* Function to implement the task */
+        Hoera10JaarComponent::led_matrix_loop, /* Function to implement the task */
         "hoera10jaar",   /* Name of the task */
         4096,            /* Stack size in words */
         this,            /* Task input parameter */
@@ -94,9 +99,22 @@ void Hoera10JaarComponent::set_led_from_mqtt(const std::string &name, const std:
     }
 }
 
-void Hoera10JaarComponent::set_off() {
-    all(0, false, false);
-}
+void Hoera10JaarComponent::set_brightness(float b) {
+    // Adapted from Kartoffel's fork :)
+    uint8_t brightness = (uint8_t)(255.0 * b);
+    if (brightness >= 248) {
+        this->levels = levels_full;
+        return;
+    }
+
+    int *levels_next = this->levels == this->levels0
+        ? this->levels1
+        : this->levels0;
+    for (uint8_t i = 0; i < num_levels; i++) {
+        levels_next[i] = brightness >= levels_full[i] ? levels_full[i] : INT_MAX;
+    }
+    this->levels = levels_next;
+};
 
 bool fade() {
   static unsigned long previous = 0;
@@ -129,14 +147,12 @@ void all(int ms, bool red, bool green) {
 }
 
 
-void led_matrix_loop(void *param) {
+void Hoera10JaarComponent::led_matrix_loop(void *param) {
     Hoera10JaarComponent *self = (Hoera10JaarComponent*)param;
 
     esp_task_wdt_init(30, true);
     esp_task_wdt_add(NULL);
 
-    const static int levels[] = { 192,40,224,8,24,152,128,104,184,16,88,216,208,240,
-        176,232,200,32,160,72,248,80,56,112,136,0,48,144,168,64,96,120};  // ((0..31) »*» 8).pick(*).join(",")
     const uint32_t colgpio[numcols] = {  // calculate at compile time
         (uint32_t)1 << cols[0],
         (uint32_t)1 << cols[1],
@@ -164,11 +180,11 @@ void led_matrix_loop(void *param) {
     for (int c = 0; c < numcols; c++) pinMode(cols[c], OUTPUT);
 
     for (;;) {  // Never hand back control
-        for (int s = 0; s < 32; s++) {
+        for (int s = 0; s < num_levels; s++) {
             for (int c = 0; c < numcols; c++) {
                 bool any = false;
                 for (int r = numrows - 1; r >= 0; r--) {
-                    bool on = current[c * 5 + r] > levels[s];
+                    bool on = current[c * 5 + r] > self->levels[s];
 
                     // digitalWrite(rows[r], on) unrolled:
                     if (on) {
