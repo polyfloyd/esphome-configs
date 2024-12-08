@@ -1,5 +1,9 @@
 esphome:
   name: hoera10jaar
+  platformio_options:
+    build_flags:
+      - "-DARDUINO_RUNNING_CORE=0"
+      - "-DARDUINO_EVENT_RUNNING_CORE=0"
 
 esp32:
   board: lolin32

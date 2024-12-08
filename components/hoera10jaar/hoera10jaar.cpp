@@ -37,13 +37,15 @@ void all(int ms, bool red, bool green);
 void Hoera10JaarComponent::setup() {
     this->levels = levels_full;
 
-    xTaskCreate(
+    const int core = !ARDUINO_RUNNING_CORE;
+    xTaskCreatePinnedToCore(
         Hoera10JaarComponent::led_matrix_loop, /* Function to implement the task */
         "hoera10jaar",   /* Name of the task */
         4096,            /* Stack size in words */
         this,            /* Task input parameter */
-        1,               /* Priority of the task */
-        NULL             /* Task handle. */
+        3,               /* Priority of the task */
+        NULL,            /* Task handle. */
+        core
     );
 }
 
@@ -206,7 +208,6 @@ void Hoera10JaarComponent::led_matrix_loop(void *param) {
 
         fade();
         esp_task_wdt_reset();
-        yield();
     }
 }
 
