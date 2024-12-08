@@ -13,6 +13,8 @@ external_components:
 
 logger:
 
+api:
+
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
