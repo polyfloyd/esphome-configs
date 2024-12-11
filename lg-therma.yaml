@@ -60,6 +60,49 @@ switch:
     modbus_controller_id: lg
     register_type: coil
     address: 0
+    # Compensate for overshooting the target temperature on startup, causing the heat pump to shut
+    # off prematurely.
+    #
+    # This is done by raising the target temperature to a higher value so the HP keeps running until
+    # it has decided the pressure is high enough to keep running at lower power. This phase lasts
+    # for about 1 hour.
+    # During the next hour, the pressure and temperature slowly drop down while the compressor runs
+    # at <20Hz.
+    # If the target temperature is kept at the initial high setting, at some point the temperature
+    # gets so far from the setpoint that the compressor will boost back up to full power, starting
+    # over.
+    # We want to keep running at low power after the initial startup, we do so by lowering the
+    # setpoint after detecting the first temperature drop.
+    on_turn_on:
+      then:
+        - if:
+            condition:
+              lambda: 'return id(reference).state == "Water Inlet";'
+            then:
+              - number.set:
+                  id: true_setpoint
+                  value: 30
+              - wait_until:
+                  condition:
+                    lambda: "return id(inlet_temp).state > 30;"
+              - wait_until:
+                  condition:
+                    lambda: "return id(inlet_temp).state < 29;"
+              - number.set:
+                  id: true_setpoint
+                  value: 28
+              - wait_until:
+                  condition:
+                    lambda: "return id(inlet_temp).state < 28;"
+              - number.set:
+                  id: true_setpoint
+                  value: 27
+              - wait_until:
+                  condition:
+                    lambda: "return id(inlet_temp).state < 27;"
+              - number.set:
+                  id: true_setpoint
+                  value: 26
 
   - platform: modbus_controller
     name: "Silent Mode"
@@ -353,6 +396,7 @@ select:
   - platform: modbus_controller
     modbus_controller_id: lg
     name: Reference
+    id: reference
     icon: mdi:thermometer
     address: 1
     value_type: U_WORD
@@ -363,6 +407,7 @@ select:
 
 number:
   - platform: modbus_controller
+    id: true_setpoint
     name: "Target Temperature"
     icon: mdi:thermometer
     address: 2
