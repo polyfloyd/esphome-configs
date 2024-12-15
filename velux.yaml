@@ -1,0 +1,80 @@
+esphome:
+  name: velux
+
+esp32:
+  board: esp32thing
+  framework:
+    type: arduino
+
+logger:
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+ota:
+  platform: esphome
+  password: !secret ota_password
+
+mqtt:
+  broker: mqtt.local
+  discovery: false
+
+api:
+
+
+switch:
+  - platform: gpio
+    id: blind_down
+    interlock: [blind_up, blind_stop]
+    pin:
+      number: GPIO17
+      inverted: true
+    on_turn_on:
+      - delay: 500ms
+      - switch.turn_off: blind_down
+  - platform: gpio
+    id: blind_up
+    interlock: [blind_down, blind_stop]
+    pin:
+      number: GPIO16
+      inverted: true
+    on_turn_on:
+      - delay: 500ms
+      - switch.turn_off: blind_up
+  - platform: gpio
+    id: blind_stop
+    interlock: [blind_down, blind_up]
+    pin:
+      number: GPIO4
+      inverted: true
+    on_turn_on:
+      - delay: 500ms
+      - switch.turn_off: blind_stop
+
+cover:
+  - platform: time_based
+    name: "Velux"
+    device_class: shutter
+    open_duration: 34s
+    open_action:
+      - switch.turn_on: blind_up
+    close_duration: 34s
+    close_action:
+      - switch.turn_on: blind_down
+    stop_action:
+      - switch.turn_on: blind_stop
+    has_built_in_endstop: true
+
+text_sensor:
+  - platform: version
+    name: "ESPHome Version"
+    hide_timestamp: true
+    state_topic: esphome/velux/version
+
+sensor:
+  - platform: wifi_signal
+    name: "WiFi Signal dB"
+    update_interval: 10s
+    state_topic: esphome/velux/wifi_signal
+    retain: false
