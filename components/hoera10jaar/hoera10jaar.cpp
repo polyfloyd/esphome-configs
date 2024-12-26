@@ -211,6 +211,5 @@ void Hoera10JaarComponent::led_matrix_loop(void *param) {
     }
 }
 
-} // esphome hoera10jaar
+} // namespace hoera10jaar
 } // namespace esphome
-

@@ -52,5 +52,5 @@ private:
     Hoera10JaarComponent *out;
 };
 
-} // esphome hoera10jaar
+} // namespace hoera10jaar
 } // namespace esphome

@@ -5,13 +5,12 @@ from esphome.const import (
 )
 from esphome.components import light
 
-from . import Hoera10JaarComponent
+from . import Hoera10JaarComponent, hoera10jaar_ns
 
 DEPENDENCIES = ["light"]
 
 CONF_HOERA10JAAR_ID = 'hoera10jaar_id'
 
-hoera10jaar_ns = cg.esphome_ns.namespace("hoera10jaar")
 Hoera10JaarLight = hoera10jaar_ns.class_("Hoera10JaarLight",  light.LightOutput)
 
 CONFIG_SCHEMA = (
