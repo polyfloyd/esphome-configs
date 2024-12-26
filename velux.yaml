@@ -1,5 +1,5 @@
 esphome:
-  name: velux
+  name: velux-${name}
 
 esp32:
   board: esp32thing
@@ -54,7 +54,7 @@ switch:
 
 cover:
   - platform: time_based
-    name: "Velux"
+    name: "Velux ${name}"
     device_class: shutter
     open_duration: 34s
     open_action:
@@ -70,11 +70,11 @@ text_sensor:
   - platform: version
     name: "ESPHome Version"
     hide_timestamp: true
-    state_topic: esphome/velux/version
+    state_topic: esphome/velux-${name}/version
 
 sensor:
   - platform: wifi_signal
     name: "WiFi Signal dB"
     update_interval: 10s
-    state_topic: esphome/velux/wifi_signal
+    state_topic: esphome/velux-${name}/wifi_signal
     retain: false

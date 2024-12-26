@@ -1,5 +1,10 @@
 esphome:
   name: watermeter
+  on_boot:
+    then:
+      - pulse_meter.set_total_pulses:
+          id: water_meter
+          value: !lambda "return id(g_total_pulses).state;"
 
 esp32:
   board: esp32thing
@@ -35,6 +40,7 @@ sensor:
     retain: false
 
   - platform: pulse_meter
+    id: water_meter
     pin: 16
     name: "Water Consumption"
     unit_of_measurement: 'L/min'
@@ -43,9 +49,24 @@ sensor:
     state_class: measurement
     icon: mdi:water
     total:
+      id: total_pulses
       unit_of_measurement: 'L'
-      name: "Water Consumed Total"
-      state_topic: watermeter/water_consumed_total
-      device_class: water
-      state_class: total_increasing
-      icon: mdi:water
+      on_value:
+        - number.set:
+            id: g_total_pulses
+            value: !lambda "return x;"
+
+number:
+  - platform: template
+    id: g_total_pulses
+    name: "Water Consumed Total"
+    state_topic: watermeter/water_consumed_total
+    restore_value: true
+    initial_value: 0
+    optimistic: true
+    min_value: 0
+    step: 1
+    max_value: 99999999
+    unit_of_measurement: 'L'
+    device_class: water
+    icon: mdi:water
