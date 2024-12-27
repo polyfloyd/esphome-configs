@@ -17,6 +17,11 @@ esp32:
   framework:
     type: arduino
 
+external_components:
+  - source:
+      type: local
+      path: components
+
 
 logger:
 
@@ -55,6 +60,7 @@ modbus_controller:
 
 switch:
   - platform: modbus_controller
+    id: lg_therma_active
     name: "Active"
     icon: mdi:power
     modbus_controller_id: lg
@@ -185,9 +191,10 @@ sensor:
       - text_sensor.template.publish:
           id: lg_therma_action
           state: !lambda |-
-            return x == 0 ? "Off"
-                 : x == 1 ? "Cool"
-                 : x == 2 ? "Heat"
+            return x == 1 ? "COOLING"
+                 : x == 2 ? "HEATING"
+                 : (x == 0 && id(lg_therma_active).state) ? "IDLE"
+                 : (x == 0 && !id(lg_therma_active).state) ? "OFF"
                  : "???";
 
   - platform: modbus_controller
@@ -384,6 +391,7 @@ sensor:
 select:
   - platform: modbus_controller
     modbus_controller_id: lg
+    id: lg_therma_mode
     name: Operation Mode
     icon: mdi:sun-snowflake-variant
     address: 0
@@ -419,6 +427,7 @@ number:
     unit_of_measurement: "°C"
 
   - platform: modbus_controller
+    id: ext_temperature
     name: "Set Room Air Temperature"
     icon: mdi:home-thermometer
     address: 3
@@ -428,3 +437,39 @@ number:
     multiply: 10
     device_class: "temperature"
     unit_of_measurement: "°C"
+
+
+climate:
+  - platform: template_climate
+    name: "LG Therma"
+    target_temperature_id: true_setpoint
+    current_temperature_id: ext_temperature
+    action_id: lg_therma_action
+    temperature_step: 0.1C
+    get_mode: !lambda |-
+      if (!id(lg_therma_active).state) {
+        return CLIMATE_MODE_OFF;
+      }
+      auto mode = id(lg_therma_mode).state;
+      return
+        mode == "Cool" ? CLIMATE_MODE_COOL :
+        mode == "Heat" ? CLIMATE_MODE_HEAT :
+        mode == "Auto" ? CLIMATE_MODE_AUTO :
+        CLIMATE_MODE_OFF;
+    idle_action:
+      - switch.turn_off: lg_therma_active
+    cool_action:
+      - select.set:
+          id: lg_therma_mode
+          option: Cool
+      - switch.turn_on: lg_therma_active
+    heat_action:
+      - select.set:
+          id: lg_therma_mode
+          option: Heat
+      - switch.turn_on: lg_therma_active
+    auto_action:
+      - select.set:
+          id: lg_therma_mode
+          option: Auto
+      - switch.turn_on: lg_therma_active
