@@ -162,8 +162,8 @@ text_sensor:
     state_topic: esphome/lg-therma/version
 
   - platform: template
-    id: lg_therma_mode
-    name: "Mode"
+    id: lg_therma_action
+    name: "Action"
     icon: mdi:sun-snowflake-variant
 
 sensor:
@@ -175,7 +175,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    id: lg_therma_mode_raw
+    id: lg_therma_action_raw
     state_topic: null
     register_type: read
     register_count: 2
@@ -183,7 +183,7 @@ sensor:
     value_type: U_WORD
     on_value:
       - text_sensor.template.publish:
-          id: lg_therma_mode
+          id: lg_therma_action
           state: !lambda |-
             return x == 0 ? "Off"
                  : x == 1 ? "Cool"
