@@ -5,6 +5,27 @@ namespace template_ {
 
 static const char *const TAG = "template_climate";
 
+ClimateMode mode_from_string(const std::string &s) {
+  if (str_equals_case_insensitive(s, "OFF")) {
+    return CLIMATE_MODE_OFF;
+  } else if (str_equals_case_insensitive(s, "HEAT_COOL")) {
+    return CLIMATE_MODE_HEAT_COOL;
+  } else if (str_equals_case_insensitive(s, "COOL")) {
+    return CLIMATE_MODE_COOL;
+  } else if (str_equals_case_insensitive(s, "HEAT")) {
+    return CLIMATE_MODE_HEAT;
+  } else if (str_equals_case_insensitive(s, "FAN_ONLY")) {
+    return CLIMATE_MODE_FAN_ONLY;
+  } else if (str_equals_case_insensitive(s, "DRY")) {
+    return CLIMATE_MODE_DRY;
+  } else if (str_equals_case_insensitive(s, "AUTO")) {
+    return CLIMATE_MODE_AUTO;
+  } else {
+    ESP_LOGW(TAG, "Unrecognized mode %s", s.c_str());
+    return CLIMATE_MODE_OFF;
+  }
+}
+
 ClimateAction action_from_string(const std::string &s) {
   if (str_equals_case_insensitive(s, "OFF")) {
     return CLIMATE_ACTION_OFF;
@@ -24,14 +45,6 @@ ClimateAction action_from_string(const std::string &s) {
   }
 }
 
-TemplateClimate::TemplateClimate()
-    : _idle_action_trigger(new Trigger<>()),
-      _cool_action_trigger(new Trigger<>()),
-      _heat_action_trigger(new Trigger<>()),
-      _fan_only_action_trigger(new Trigger<>()),
-      _dry_action_trigger(new Trigger<>()),
-      _auto_action_trigger(new Trigger<>()) {}
-
 void TemplateClimate::setup() {
     this->_current_temperature->add_on_state_callback([this](float state) {
         this->current_temperature = state;
@@ -45,6 +58,12 @@ void TemplateClimate::setup() {
     });
     this->current_temperature = this->_target_temperature->state;
 
+    this->_mode->add_on_state_callback([this](const std::string &state, size_t i) {
+        this->mode = mode_from_string(state);
+        this->publish_state();
+    });
+    this->mode = mode_from_string(this->_mode->state);
+
     if (this->_action != nullptr) {
         this->_action->add_on_state_callback([this](const std::string &state) {
             this->action = action_from_string(state);
@@ -54,49 +73,22 @@ void TemplateClimate::setup() {
     }
 }
 
-void TemplateClimate::loop() {
-    this->refresh();
-}
-
-void TemplateClimate::refresh() {
-    this->mode = this->_get_mode.value()();
-}
-
-ClimateTraits TemplateClimate::traits() {
-    ClimateTraits traits;
-
-    traits.set_supports_current_temperature(true);
-
-    std::set<ClimateMode> supported_modes{CLIMATE_MODE_OFF};
-    if (this->_cool_action_trigger) supported_modes.insert(CLIMATE_MODE_COOL);
-    if (this->_heat_action_trigger) supported_modes.insert(CLIMATE_MODE_HEAT);
-    if (this->_fan_only_action_trigger) supported_modes.insert(CLIMATE_MODE_FAN_ONLY);
-    if (this->_dry_action_trigger) supported_modes.insert(CLIMATE_MODE_DRY);
-    if (this->_auto_action_trigger) supported_modes.insert(CLIMATE_MODE_AUTO);
-    traits.set_supported_modes(supported_modes);
-
-    traits.set_supports_action(this->_action != nullptr);
-    traits.set_visual_current_temperature_step(this->_temperature_step);
-
-    return traits;
-}
-
 void TemplateClimate::control(const ClimateCall &call) {
     auto mode = call.get_mode();
     if (mode) {
         switch (mode.value()) {
         case CLIMATE_MODE_OFF:
-            this->_idle_action_trigger->trigger();
+            this->_mode->state = "OFF";
         case CLIMATE_MODE_COOL:
-            if (this->_cool_action_trigger) this->_cool_action_trigger->trigger();
+            this->_mode->state = "COOL";
         case CLIMATE_MODE_HEAT:
-            if (this->_heat_action_trigger) this->_heat_action_trigger->trigger();
+            this->_mode->state = "HEAT";
         case CLIMATE_MODE_FAN_ONLY:
-            if (this->_fan_only_action_trigger) this->_fan_only_action_trigger->trigger();
+            this->_mode->state = "FAN_ONLY";
         case CLIMATE_MODE_DRY:
-            if (this->_dry_action_trigger) this->_dry_action_trigger->trigger();
+            this->_mode->state = "DRY";
         case CLIMATE_MODE_AUTO:
-            if (this->_auto_action_trigger) this->_auto_action_trigger->trigger();
+            this->_mode->state = "AUTO";
         }
     }
 
@@ -104,8 +96,6 @@ void TemplateClimate::control(const ClimateCall &call) {
     if (target_temperature) {
         this->_target_temperature->state = target_temperature.value();
     }
-
-    this->refresh();
 
     this->publish_state();
 }

@@ -168,7 +168,7 @@ text_sensor:
     state_topic: esphome/lg-therma/version
 
   - platform: template
-    id: lg_therma_action
+    id: climate_action
     name: "Action"
     icon: mdi:sun-snowflake-variant
 
@@ -178,6 +178,11 @@ sensor:
     update_interval: 10s
     state_topic: esphome/lg-therma/wifi_signal
     retain: false
+
+  - platform: template
+    id: climate_current_temperature
+    lambda: !lambda |-
+      return id(ext_temperature).state;
 
   - platform: modbus_controller
     modbus_controller_id: lg
@@ -189,7 +194,7 @@ sensor:
     value_type: U_WORD
     on_value:
       - text_sensor.template.publish:
-          id: lg_therma_action
+          id: climate_action
           state: !lambda |-
             return x == 1 ? "COOLING"
                  : x == 2 ? "HEATING"
@@ -389,6 +394,26 @@ sensor:
     accuracy_decimals: 0
 
 select:
+  - platform: template
+    id: climate_mode
+    lambda: !lambda |-
+        return id(lg_therma_active).state
+             ? id(lg_therma_mode).state
+             : "OFF";
+    set_action:
+        - lambda: !lambda |-
+            if (x == "OFF") {
+              id(lg_therma_active).state = false;
+            } else {
+              id(lg_therma_mode).state = x;
+              id(lg_therma_active).state = true;
+            }
+    options:
+      - "OFF"
+      - "COOL"
+      - "HEAT"
+      - "AUTO"
+
   - platform: modbus_controller
     modbus_controller_id: lg
     id: lg_therma_mode
@@ -397,9 +422,9 @@ select:
     address: 0
     value_type: U_WORD
     optionsmap:
-      "Cool": 0
-      "Heat": 4
-      "Auto": 5
+      "COOL": 0
+      "HEAT": 4
+      "AUTO": 5
 
   - platform: modbus_controller
     modbus_controller_id: lg
@@ -438,38 +463,16 @@ number:
     device_class: "temperature"
     unit_of_measurement: "°C"
 
-
 climate:
   - platform: template_climate
     name: "LG Therma"
     target_temperature_id: true_setpoint
-    current_temperature_id: ext_temperature
-    action_id: lg_therma_action
+    current_temperature_id: climate_current_temperature
+    mode_id: climate_mode
+    action_id: climate_action
+    supported_modes:
+      - "OFF"
+      - "COOL"
+      - "HEAT"
+      - "AUTO"
     temperature_step: 0.1C
-    get_mode: !lambda |-
-      if (!id(lg_therma_active).state) {
-        return CLIMATE_MODE_OFF;
-      }
-      auto mode = id(lg_therma_mode).state;
-      return
-        mode == "Cool" ? CLIMATE_MODE_COOL :
-        mode == "Heat" ? CLIMATE_MODE_HEAT :
-        mode == "Auto" ? CLIMATE_MODE_AUTO :
-        CLIMATE_MODE_OFF;
-    idle_action:
-      - switch.turn_off: lg_therma_active
-    cool_action:
-      - select.set:
-          id: lg_therma_mode
-          option: Cool
-      - switch.turn_on: lg_therma_active
-    heat_action:
-      - select.set:
-          id: lg_therma_mode
-          option: Heat
-      - switch.turn_on: lg_therma_active
-    auto_action:
-      - select.set:
-          id: lg_therma_mode
-          option: Auto
-      - switch.turn_on: lg_therma_active
