@@ -61,7 +61,7 @@ modbus_controller:
 switch:
   - platform: modbus_controller
     id: lg_therma_active
-    name: "Active"
+    name: "LG-Therma Active"
     icon: mdi:power
     modbus_controller_id: lg
     register_type: coil
@@ -111,7 +111,7 @@ switch:
                   value: 26
 
   - platform: modbus_controller
-    name: "Silent Mode"
+    id: lg_therma_silent_mode
     icon: mdi:volume-off
     modbus_controller_id: lg
     register_type: coil
@@ -120,7 +120,7 @@ switch:
 binary_sensor:
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "Low Flow"
+    name: "LG-Therma Low Flow"
     icon: mdi:pump-off
     register_type: discrete_input
     address: 0
@@ -128,53 +128,52 @@ binary_sensor:
   - platform: modbus_controller
     modbus_controller_id: lg
     id: pump_running
-    name: "Pump Running"
+    name: "LG-Therma Pump Running"
     icon: mdi:pump
     register_type: discrete_input
     address: 1
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "Compressor Running"
+    name: "LG-Therma Compressor Running"
     icon: mdi:car-turbocharger
     register_type: discrete_input
     address: 3
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "Defrosting"
+    name: "LG-Therma Defrosting"
     icon: mdi:snowflake-melt
     register_type: discrete_input
     address: 4
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "Silent Mode On"
+    name: "LG-Therma Silent Mode On"
     icon: mdi:volume-off
     register_type: discrete_input
     address: 7
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "Error"
+    name: "LG-Therma Error"
     icon: mdi:alert-outline
     register_type: discrete_input
     address: 13
 
 text_sensor:
   - platform: version
-    name: "ESPHome Version"
+    name: "LG-Therma ESPHome Version"
     hide_timestamp: true
     state_topic: esphome/lg-therma/version
 
   - platform: template
     id: climate_action
-    name: "Action"
     icon: mdi:sun-snowflake-variant
 
 sensor:
   - platform: wifi_signal
-    name: "WiFi Signal dB"
+    name: "LG-Therma WiFi Signal dB"
     update_interval: 10s
     state_topic: esphome/lg-therma/wifi_signal
     retain: false
@@ -205,7 +204,7 @@ sensor:
   - platform: modbus_controller
     modbus_controller_id: lg
     id: inlet_temp
-    name: "Water Inlet"
+    name: "LG-Therma Water Inlet"
     icon: mdi:thermometer-chevron-down
     register_type: read
     address: 2
@@ -221,7 +220,7 @@ sensor:
   - platform: modbus_controller
     modbus_controller_id: lg
     id: outlet_temp
-    name: "Water Outlet"
+    name: "LG-Therma Water Outlet"
     icon: mdi:thermometer-chevron-up
     register_type: read
     address: 3
@@ -240,7 +239,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "Room Air Temperature"
+    name: "LG-Therma Room Air Temperature"
     register_type: read
     address: 7
     register_count: 2
@@ -255,7 +254,7 @@ sensor:
   - platform: modbus_controller
     modbus_controller_id: lg
     id: flow_rate
-    name: "Flow Rate"
+    name: "LG-Therma Flow Rate"
     icon: mdi:waves-arrow-right
     register_type: read
     address: 8
@@ -276,7 +275,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "Air Ingress Temperature"
+    name: "LG-Therma Air Ingress Temperature"
     register_type: read
     address: 12
     register_count: 2
@@ -294,7 +293,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "Refridgerant Cool"
+    name: "LG-Therma Refridgerant Cool"
     icon: mdi:thermometer-minus
     register_type: read
     address: 18
@@ -309,7 +308,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "Refridgerant Hot"
+    name: "LG-Therma Refridgerant Hot"
     icon: mdi:thermometer-plus
     register_type: read
     address: 19
@@ -324,7 +323,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "Air Egress Temperature"
+    name: "LG-Therma Air Egress Temperature"
     register_type: read
     address: 20
     register_count: 2
@@ -340,7 +339,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "Condenser Pressure"
+    name: "LG-Therma Condenser Pressure"
     icon: mdi:gauge
     register_type: read
     address: 22
@@ -351,7 +350,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "Evaporator Pressure"
+    name: "LG-Therma Evaporator Pressure"
     icon: mdi:gauge-low
     register_type: read
     address: 23
@@ -362,7 +361,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "Compressor Speed"
+    name: "LG-Therma Compressor Speed"
     icon: mdi:car-turbocharger
     register_type: read
     address: 24
@@ -373,7 +372,7 @@ sensor:
 
   - platform: template
     id: water_delta_t
-    name: "Water ΔT"
+    name: "LG-Therma Water ΔT"
     icon: mdi:delta
     lambda: |-
       return id(outlet_temp).state - id(inlet_temp).state;
@@ -381,7 +380,7 @@ sensor:
     state_class: "measurement"
 
   - platform: template
-    name: "Power Output"
+    name: "LG-Therma Power Output"
     icon: mdi:heat-wave
     lambda: |-
       // Water has a specific heat of 4184 joule per kilogram/degree.
@@ -399,25 +398,45 @@ select:
     lambda: !lambda |-
         return id(lg_therma_active).state
              ? id(lg_therma_mode).state
-             : "OFF";
+             : std::string("OFF");
     set_action:
-        - lambda: !lambda |-
-            if (x == "OFF") {
-              id(lg_therma_active).state = false;
-            } else {
-              id(lg_therma_mode).state = x;
-              id(lg_therma_active).state = true;
-            }
+      - if:
+          condition:
+            lambda: 'return x != "OFF";'
+          then:
+            - switch.turn_on: lg_therma_active
+            - select.set:
+                id: lg_therma_mode
+                option: !lambda return x;
+          else:
+            - switch.turn_off: lg_therma_active
     options:
       - "OFF"
       - "COOL"
       - "HEAT"
       - "AUTO"
 
+  - platform: template
+    id: climate_fan_mode
+    lambda: !lambda |-
+      return id(lg_therma_silent_mode).state
+           ? std::string("QUIET")
+           : std::string("ON");
+    set_action:
+      - if:
+          condition:
+            lambda: 'return x == "ON";'
+          then:
+            - switch.turn_on: lg_therma_silent_mode
+          else:
+            - switch.turn_off: lg_therma_silent_mode
+    options:
+      - "ON"
+      - "QUIET"
+
   - platform: modbus_controller
     modbus_controller_id: lg
     id: lg_therma_mode
-    name: Operation Mode
     icon: mdi:sun-snowflake-variant
     address: 0
     value_type: U_WORD
@@ -428,7 +447,7 @@ select:
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: Reference
+    name: "LG-Therma Reference"
     id: reference
     icon: mdi:thermometer
     address: 1
@@ -441,7 +460,6 @@ select:
 number:
   - platform: modbus_controller
     id: true_setpoint
-    name: "Target Temperature"
     icon: mdi:thermometer
     address: 2
     min_value: 16
@@ -453,10 +471,10 @@ number:
 
   - platform: modbus_controller
     id: ext_temperature
-    name: "Set Room Air Temperature"
+    name: "LG-Therma Set Room Air Temperature"
     icon: mdi:home-thermometer
     address: 3
-    min_value: 10
+    min_value: 0
     max_value: 40
     step: 1
     multiply: 10
@@ -469,10 +487,14 @@ climate:
     target_temperature_id: true_setpoint
     current_temperature_id: climate_current_temperature
     mode_id: climate_mode
+    fan_mode_id: climate_fan_mode
     action_id: climate_action
     supported_modes:
       - "OFF"
       - "COOL"
       - "HEAT"
       - "AUTO"
+    supported_fan_modes:
+      - "ON"
+      - "QUIET"
     temperature_step: 0.1C

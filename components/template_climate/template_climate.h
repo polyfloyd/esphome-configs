@@ -41,6 +41,10 @@ public:
         this->_mode = s;
     }
 
+    void set_fan_mode(Select *s) {
+        this->_fan_mode = s;
+    }
+
     void set_action(TextSensor *s) {
         this->_action = s;
         this->traits_.set_supports_action(true);
@@ -52,6 +56,7 @@ protected:
     Sensor *_current_temperature{nullptr};
     Number *_target_temperature{nullptr};
     Select *_mode{nullptr};
+    Select *_fan_mode{nullptr};
     TextSensor *_action{nullptr};
 };
 
