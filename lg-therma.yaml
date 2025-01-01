@@ -20,7 +20,8 @@ esp32:
 external_components:
   - source:
       type: local
-      path: components
+      path: /home/polyfloyd/esphome/esphome/components
+    components: [ template ]
 
 
 logger:
@@ -61,7 +62,6 @@ modbus_controller:
 switch:
   - platform: modbus_controller
     id: lg_therma_active
-    name: "LG-Therma Active"
     icon: mdi:power
     modbus_controller_id: lg
     register_type: coil
@@ -399,6 +399,7 @@ select:
         return id(lg_therma_active).state
              ? id(lg_therma_mode).state
              : std::string("OFF");
+    update_interval: 1s
     set_action:
       - if:
           condition:
@@ -422,10 +423,12 @@ select:
       return id(lg_therma_silent_mode).state
            ? std::string("QUIET")
            : std::string("ON");
+    update_interval: 1s
     set_action:
       - if:
           condition:
-            lambda: 'return x == "ON";'
+            lambda: !lambda |-
+              return x == "QUIET";
           then:
             - switch.turn_on: lg_therma_silent_mode
           else:
@@ -482,7 +485,7 @@ number:
     unit_of_measurement: "°C"
 
 climate:
-  - platform: template_climate
+  - platform: template
     name: "LG Therma"
     target_temperature_id: true_setpoint
     current_temperature_id: climate_current_temperature
@@ -497,4 +500,5 @@ climate:
     supported_fan_modes:
       - "ON"
       - "QUIET"
-    temperature_step: 0.1C
+    visual:
+      temperature_step: 0.5C
