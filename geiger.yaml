@@ -19,6 +19,9 @@ ota:
 
 mqtt:
   broker: mqtt.local
+  discovery: false
+
+api:
 
 
 i2c:

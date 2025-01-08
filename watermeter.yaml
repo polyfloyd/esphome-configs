@@ -24,6 +24,9 @@ ota:
 
 mqtt:
   broker: mqtt.local
+  discovery: false
+
+api:
 
 
 text_sensor:

@@ -19,6 +19,9 @@ ota:
 
 mqtt:
   broker: mqtt.local
+  discovery: false
+
+api:
 
 
 i2c:
@@ -43,13 +46,13 @@ one_wire:
 
 text_sensor:
   - platform: version
-    name: "ESPHome Version"
+    name: "${name} ESPHome Version"
     hide_timestamp: true
     state_topic: esphome/${name}/version
 
 sensor:
   - platform: wifi_signal
-    name: "WiFi Signal dB"
+    name: "${name} WiFi Signal dB"
     update_interval: 10s
     state_topic: esphome/${name}/wifi_signal
     retain: false
@@ -57,7 +60,7 @@ sensor:
   - platform: mhz19
     uart_id: uart_mhz19
     co2:
-      name: "CO2"
+      name: "${name} CO2"
       state_topic: sensors/${name}/co2
       retain: false
       on_value_range:
@@ -74,21 +77,21 @@ sensor:
 
   - platform: bme280_i2c
     temperature:
-      name: "BME280 Temperature"
+      name: "${name} BME280 Temperature"
       state_topic: null
     pressure:
-      name: "Barometer"
+      name: "${name} Barometer"
       state_topic: sensors/${name}/pressure
       retain: false
     humidity:
-      name: "Humidity"
+      name: "${name} Humidity"
       state_topic: sensors/${name}/humidity
       retain: false
     address: 0x76
     update_interval: 10s
 
   - platform: dallas_temp
-    name: "Temperature"
+    name: "${name} Temperature"
     address: ${dallas_addr}
     state_topic: sensors/${name}/temperature
     retain: false
@@ -97,27 +100,27 @@ sensor:
     uart_id: uart_pms7003
     type: PMSX003
     pm_1_0:
-      name: "Particulates <1.0μg/m³"
+      name: "${name} Particulates <1.0μg/m³"
       state_topic: sensors/${name}/dust_mass/pm1.0
       retain: false
     pm_2_5:
-      name: "Particulates <2.5μg/m³"
+      name: "${name} Particulates <2.5μg/m³"
       state_topic: sensors/${name}/dust_mass/pm2.5
       retain: false
     pm_10_0:
-      name: "Particulates <10.0μg/m³"
+      name: "${name} Particulates <10.0μg/m³"
       state_topic: sensors/${name}/dust_mass/pm10.0
       retain: false
     update_interval: 30s
 
   - platform: sgp30
     tvoc:
-      name: "TVOC"
+      name: "${name} TVOC"
       accuracy_decimals: 0
       state_topic: sensors/${name}/organic_compounds
       retain: false
     eco2:
-      name: "SGP30 eCO2"
+      name: "${name} SGP30 eCO2"
       accuracy_decimals: 0
       state_topic: null
     store_baseline: yes
@@ -125,7 +128,7 @@ sensor:
     update_interval: 30s
 
   - platform: bh1750
-    name: "Ambient Light"
+    name: "${name} Ambient Light"
     address: 0x23
     update_interval: 10s
     state_topic: sensors/${name}/light_intensity
@@ -140,7 +143,7 @@ light:
     num_leds: 1
     rmt_channel: 0
     chipset: SK6812
-    name: "Led"
+    name: "${name} Snuffelaar Led"
     effects:
       - pulse:
           name: "Slow Pulse"
@@ -154,4 +157,4 @@ switch:
     pin:
       number: 15
       mode: INPUT_PULLUP
-    name: "Button"
+    name: "${name} Snuffelaar Button"
