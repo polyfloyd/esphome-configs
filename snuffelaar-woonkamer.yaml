@@ -1,5 +1,6 @@
 substitutions:
   name: woonkamer
+  friendly_name: Snuffelaar Woonkamer
   dallas_addr: "0x0639e062dc16ff28"
   co2_alarm_off: "999"
   co2_alarm_on: "1000"

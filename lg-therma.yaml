@@ -11,6 +11,7 @@
 
 esphome:
   name: lg-therma
+  friendly_name: LG Therma
 
 esp32:
   board: esp32thing
@@ -121,7 +122,7 @@ switch:
 binary_sensor:
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "LG-Therma Low Flow"
+    name: "Low Flow"
     icon: mdi:pump-off
     register_type: discrete_input
     address: 0
@@ -129,35 +130,35 @@ binary_sensor:
   - platform: modbus_controller
     modbus_controller_id: lg
     id: pump_running
-    name: "LG-Therma Pump Running"
+    name: "Pump Running"
     icon: mdi:pump
     register_type: discrete_input
     address: 1
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "LG-Therma Compressor Running"
+    name: "Compressor Running"
     icon: mdi:car-turbocharger
     register_type: discrete_input
     address: 3
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "LG-Therma Defrosting"
+    name: "Defrosting"
     icon: mdi:snowflake-melt
     register_type: discrete_input
     address: 4
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "LG-Therma Silent Mode On"
+    name: "Silent Mode On"
     icon: mdi:volume-off
     register_type: discrete_input
     address: 7
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "LG-Therma Error"
+    name: "Error"
     icon: mdi:alert-outline
     register_type: discrete_input
     address: 13
@@ -169,7 +170,7 @@ text_sensor:
 
 sensor:
   - platform: wifi_signal
-    name: "LG-Therma WiFi Signal dB"
+    name: "WiFi Signal dB"
     update_interval: 10s
     state_topic: esphome/lg-therma/wifi_signal
     retain: false
@@ -208,7 +209,7 @@ sensor:
   - platform: modbus_controller
     modbus_controller_id: lg
     id: inlet_temp
-    name: "LG-Therma Water Inlet"
+    name: "Water Inlet"
     icon: mdi:thermometer-chevron-down
     register_type: read
     address: 2
@@ -224,7 +225,7 @@ sensor:
   - platform: modbus_controller
     modbus_controller_id: lg
     id: outlet_temp
-    name: "LG-Therma Water Outlet"
+    name: "Water Outlet"
     icon: mdi:thermometer-chevron-up
     register_type: read
     address: 3
@@ -244,7 +245,7 @@ sensor:
   - platform: modbus_controller
     modbus_controller_id: lg
     id: int_temperature
-    name: "LG-Therma Room Air Temperature"
+    name: "Room Air Temperature"
     register_type: read
     address: 7
     register_count: 2
@@ -259,7 +260,7 @@ sensor:
   - platform: modbus_controller
     modbus_controller_id: lg
     id: flow_rate
-    name: "LG-Therma Flow Rate"
+    name: "Flow Rate"
     icon: mdi:waves-arrow-right
     register_type: read
     address: 8
@@ -280,7 +281,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "LG-Therma Air Ingress Temperature"
+    name: "Air Ingress Temperature"
     register_type: read
     address: 12
     register_count: 2
@@ -298,7 +299,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "LG-Therma Refridgerant Cool"
+    name: "Refridgerant Cool"
     icon: mdi:thermometer-minus
     register_type: read
     address: 18
@@ -313,7 +314,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "LG-Therma Refridgerant Hot"
+    name: "Refridgerant Hot"
     icon: mdi:thermometer-plus
     register_type: read
     address: 19
@@ -328,7 +329,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "LG-Therma Air Egress Temperature"
+    name: "Air Egress Temperature"
     register_type: read
     address: 20
     register_count: 2
@@ -344,7 +345,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "LG-Therma Condenser Pressure"
+    name: "Condenser Pressure"
     icon: mdi:gauge
     register_type: read
     address: 22
@@ -355,7 +356,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "LG-Therma Evaporator Pressure"
+    name: "Evaporator Pressure"
     icon: mdi:gauge-low
     register_type: read
     address: 23
@@ -366,7 +367,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "LG-Therma Compressor Speed"
+    name: "Compressor Speed"
     icon: mdi:car-turbocharger
     register_type: read
     address: 24
@@ -377,7 +378,7 @@ sensor:
 
   - platform: template
     id: water_delta_t
-    name: "LG-Therma Water ΔT"
+    name: "Water ΔT"
     icon: mdi:delta
     lambda: |-
       return id(outlet_temp).state - id(inlet_temp).state;
@@ -385,7 +386,7 @@ sensor:
     state_class: "measurement"
 
   - platform: template
-    name: "LG-Therma Power Output"
+    name: "Power Output"
     icon: mdi:heat-wave
     lambda: |-
       // Water has a specific heat of 4184 joule per kilogram/degree.
@@ -455,7 +456,7 @@ select:
 
   - platform: modbus_controller
     modbus_controller_id: lg
-    name: "LG-Therma Reference"
+    name: "Reference"
     id: reference
     icon: mdi:thermometer
     address: 1
@@ -479,7 +480,7 @@ number:
 
   - platform: modbus_controller
     id: ext_temperature
-    name: "LG-Therma Set Room Air Temperature"
+    name: "Set Room Air Temperature"
     icon: mdi:home-thermometer
     address: 3
     min_value: 0
