@@ -37,13 +37,6 @@ mpr121:
   touch_threshold: 10
   release_threshold: 7
 
-
-text_sensor:
-  - platform: version
-    name: "ESPHome Version"
-    hide_timestamp: true
-    state_topic: esphome/geiger/version
-
 sensor:
   - platform: wifi_signal
     name: "WiFi Signal dB"

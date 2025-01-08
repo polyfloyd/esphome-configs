@@ -66,12 +66,6 @@ cover:
       - switch.turn_on: blind_stop
     has_built_in_endstop: true
 
-text_sensor:
-  - platform: version
-    name: "ESPHome Version"
-    hide_timestamp: true
-    state_topic: esphome/velux-${name}/version
-
 sensor:
   - platform: wifi_signal
     name: "WiFi Signal dB"

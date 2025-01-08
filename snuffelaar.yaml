@@ -43,13 +43,6 @@ one_wire:
   - platform: gpio
     pin: 4
 
-
-text_sensor:
-  - platform: version
-    name: "${name} ESPHome Version"
-    hide_timestamp: true
-    state_topic: esphome/${name}/version
-
 sensor:
   - platform: wifi_signal
     name: "${name} WiFi Signal dB"

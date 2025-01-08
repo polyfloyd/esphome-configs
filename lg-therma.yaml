@@ -163,11 +163,6 @@ binary_sensor:
     address: 13
 
 text_sensor:
-  - platform: version
-    name: "LG-Therma ESPHome Version"
-    hide_timestamp: true
-    state_topic: esphome/lg-therma/version
-
   - platform: template
     id: climate_action
     icon: mdi:sun-snowflake-variant

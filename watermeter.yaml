@@ -28,13 +28,6 @@ mqtt:
 
 api:
 
-
-text_sensor:
-  - platform: version
-    name: "ESPHome Version"
-    hide_timestamp: true
-    state_topic: esphome/watermeter/version
-
 sensor:
   - platform: wifi_signal
     name: "WiFi Signal dB"

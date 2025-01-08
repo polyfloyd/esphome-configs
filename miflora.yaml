@@ -48,12 +48,6 @@ esp32_ble_tracker:
     active: false
     continuous: false
 
-text_sensor:
-  - platform: version
-    name: "ESPHome Version"
-    hide_timestamp: true
-    state_topic: esphome/miflora/version
-
 sensor:
   - platform: wifi_signal
     name: "WiFi Signal dB"
