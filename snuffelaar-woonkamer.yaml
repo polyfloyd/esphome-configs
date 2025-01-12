@@ -5,4 +5,4 @@ substitutions:
   co2_alarm_off: "999"
   co2_alarm_on: "1000"
 
-<<: !include snuffelaar.yaml
+<<: !include snuffelaar.yaml.tmpl
