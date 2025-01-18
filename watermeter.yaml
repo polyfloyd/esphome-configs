@@ -1,5 +1,6 @@
 esphome:
   name: watermeter
+  friendly_name: Watermeter
   on_boot:
     then:
       - pulse_meter.set_total_pulses:
@@ -38,7 +39,7 @@ sensor:
   - platform: pulse_meter
     id: water_meter
     pin: 16
-    name: "Water Consumption"
+    name: "Consumption"
     unit_of_measurement: 'L/min'
     state_topic: watermeter/water_consumption
     device_class: water
@@ -55,7 +56,7 @@ sensor:
 number:
   - platform: template
     id: g_total_pulses
-    name: "Water Consumed Total"
+    name: "Consumed Total"
     state_topic: watermeter/water_consumed_total
     restore_value: true
     initial_value: 0
