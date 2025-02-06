@@ -498,13 +498,5 @@ climate:
     mode_id: climate_mode
     fan_mode_id: climate_fan_mode
     action_id: climate_action
-    supported_modes:
-      - "OFF"
-      - "COOL"
-      - "HEAT"
-      - "AUTO"
-    supported_fan_modes:
-      - "ON"
-      - "QUIET"
     visual:
       temperature_step: 0.5C
