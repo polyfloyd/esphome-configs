@@ -1,4 +1,0 @@
-substitutions:
-  name: rechts
-
-<<: !include velux.yaml

@@ -1,4 +1,0 @@
-substitutions:
-  name: links
-
-<<: !include velux.yaml
