@@ -96,6 +96,7 @@ image:
     # https://www.svgrepo.com/svg/450644/banana
   - file: resources/banana.svg
     id: banana
+    type: binary
     resize: 37x37 # 296/8
 
 display:
